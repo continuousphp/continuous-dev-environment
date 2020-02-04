@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Description: Continuous Development Environment
+
+
+Parameters:
+  BaseDomain:
+    Description: Base domain for the app
+    Type: String
+  CertificateArn:
+    Description: Certificate ARN
+    Type: String
+
+
+Resources:
+  VpcStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./library/vpc.yml
+      Parameters:
+        Cidr: 10.0.0.0/16
+        Subnets: !Join
+          - ','
+          - - 10.0.1.0/24
+            - 10.0.2.0/24
+
+  LoadBalancerStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./library/load-balancer.yml
+      Parameters:
+        Vpc: !GetAtt VpcStack.Outputs.Vpc
+        Subnets: !GetAtt VpcStack.Outputs.Subnets
+        CertificateArn: !Ref CertificateArn

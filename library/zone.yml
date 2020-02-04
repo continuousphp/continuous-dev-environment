@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: AZ resources
+
+
+Parameters:
+  Vpc:
+    Description: VPC identifier
+    Type: AWS::EC2::VPC::Id
+  CidrBlock:
+    Description: Cidr Block
+    Type: String
+  AvailabilityZone:
+    Description: Subnets Availability Zone
+    Type: AWS::EC2::AvailabilityZone::Name
+  NetworkAclId:
+    Description: Network ACL ID
+    Type: String
+  RouteTableId:
+    Description: Route Table
+    Type: String
+  Range:
+    Description: Range
+    Type: String
+
+
+Resources:
+  Subnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: !Ref CidrBlock
+      VpcId: !Ref Vpc
+      AvailabilityZone: !Ref AvailabilityZone
+      Tags:
+      -
+        Key: network
+        Value: public
+      -
+        Key: Name
+        Value: !Sub 'subnet-${Range}'
+
+  SubnetAclAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Ref Subnet
+      NetworkAclId: !Ref NetworkAclId
+
+  RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet
+      RouteTableId: !Ref RouteTableId
+
+
+Outputs:
+  AvailabilityZone:
+    Description: Availability Zone
+    Value: !Ref AvailabilityZone
+  Subnet:
+    Description: Subnet
+    Value: !Ref Subnet

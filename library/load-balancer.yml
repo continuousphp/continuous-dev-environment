@@ -1,0 +1,104 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Application Load Balancer Stack
+
+Parameters:
+  Vpc:
+    Description: VPC identifier
+    Type: String
+  Subnets:
+    Description: Public Subnet list
+    Type: List<AWS::EC2::Subnet::Id>
+  CertificateArn:
+    Description: Amazon TLS Certificate ARN
+    Type: String
+
+Resources:
+  TargetSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ALB target security group
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref SecurityGroup
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          SourceSecurityGroupId: !Ref SecurityGroup
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ALB security group
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+        - FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+      SecurityGroupEgress:
+        - IpProtocol: '-1'
+          CidrIp: 0.0.0.0/0
+
+  Alb:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Subnets: !Ref Subnets
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref SecurityGroup
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: 300
+
+  NoopTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 80
+      Protocol: HTTP
+      VpcId: !Ref Vpc
+
+  AlbHttpListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref NoopTargetGroup
+      LoadBalancerArn: !Ref Alb
+      Port: 80
+      Protocol: HTTP
+
+  AlbHttpsListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref NoopTargetGroup
+      LoadBalancerArn: !Ref Alb
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref CertificateArn
+
+Outputs:
+  AlbHttpListener:
+    Description: ALB Listener for HTTP (80)
+    Value: !Ref AlbHttpListener
+  AlbHttpsListener:
+    Description: ALB Listener for HTTPS (443)
+    Value: !Ref AlbHttpsListener
+  TargetSecurityGroup:
+    Description: Security Group for Load Balancer targets
+    Value: !Ref TargetSecurityGroup
+  HostedZoneId:
+    Description: ALB Hosted ZoneID
+    Value: !GetAtt Alb.CanonicalHostedZoneID
+  DNSName:
+    Description: ALB Hostname
+    Value: !GetAtt Alb.DNSName
