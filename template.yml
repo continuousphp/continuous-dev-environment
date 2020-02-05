@@ -11,6 +11,16 @@ Parameters:
   CertificateArn:
     Description: Certificate ARN
     Type: String
+  Cloud9InstanceType:
+    Description: Cloud9 EC2 Instance Type
+    Type: String
+    Default: t3.xlarge
+  RoleSSO:
+    Description: Federation Role Name
+    Type: String
+  User:
+    Description: Federated User email address
+    Type: String
 
 
 Resources:
@@ -33,3 +43,14 @@ Resources:
         Vpc: !GetAtt VpcStack.Outputs.Vpc
         Subnets: !GetAtt VpcStack.Outputs.Subnets
         CertificateArn: !Ref CertificateArn
+        BaseDomain: !Ref BaseDomain
+
+  DevelopmentEnvironment:
+    Type: AWS::Cloud9::EnvironmentEC2
+    DependsOn: VpcStack
+    Properties:
+      AutomaticStopTimeMinutes: 30
+      InstanceType: !Ref Cloud9InstanceType
+      Name: !Ref AWS::StackName
+      SubnetId: !GetAtt VpcStack.Outputs.Subnet1
+      OwnerArn: !Sub 'arn:aws:sts::${AWS::AccountId}:assumed-role/${RoleSSO}/${User}'

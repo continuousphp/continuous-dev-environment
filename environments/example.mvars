@@ -1,0 +1,6 @@
+bucket=example-template-bucket
+role=arn:aws:iam::ACCOUNTID:role/administrative-cloudformation-role
+certificateArn=arn:aws:acm:eu-west-1:ACCOUNTID:certificate/CERTIFICATEID
+baseDomain=example.com
+user=john@example.com
+roleSSO=continuous-team-sso-Role-ABCDEFG

@@ -50,7 +50,8 @@ deploy:
 		--capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
 		--role-arn $(role) \
 		--stack-name $(stack_name) \
-		--parameter-overrides BaseDomain=$(baseDomain) CertificateArn=$(certificateArn)
+		--parameter-overrides BaseDomain=$(baseDomain) CertificateArn=$(certificateArn) \
+		User=$(user) RoleSSO=$(roleSSO)
 
 ## Describe Cloud Formation stack outputs
 describe:
