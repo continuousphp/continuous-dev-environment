@@ -2,7 +2,8 @@
 .idea
 
 # Make
-environments/*-local.mvars
+!environments/example.mvars
+environments/*.mvars
 
 # SAM Specific files
 template-output.yml

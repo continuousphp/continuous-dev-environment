@@ -4,7 +4,7 @@ NC = \033[0m
 
 env?=staging
 
--include environments/$(env).mvars
+include environments/$(env).mvars
 
 default:help;
 
