@@ -17,12 +17,13 @@ you must install :
 
 ### preparation : 
 
-prepare your hosted zone in Route 53.  
-Create you certificate for your base domaine  
+prepare your hosted zone in Route 53.
+Create you certificate for your base domaine
 (you can add a wildcard subdomain) : https://aws.amazon.com/fr/certificate-manager/ 
 
-Create cloudformation user and S3 bucket for cloud formation template.
-See
+Create cloudformation user and S3 bucket for cloud formation template using the init stack.
+
+Deploy manually the `init.yml` stack in order to have `cloudformation` user that you will use to deploy the local environement, and the `cloudformation-cloud9-role` use by cloudformation service during the deployment.
 
 ### create local environment 
 
