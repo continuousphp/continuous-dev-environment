@@ -8,12 +8,12 @@ include environments/$(env).mvars
 
 default:help;
 
-appName?=continuous-dev-environment
+appName?=ekonoo-dev-environment
 
 region?=eu-west-1
-stack_name?=$(env)-$(appName)
+stack_name?=$(appName)
 profile?=$(appName)-$(env)
-baseDomain?=continuous.team
+baseDomain?=dev-<devName>-.ekonoo.com
 
 ## Display this help dialog
 help:
