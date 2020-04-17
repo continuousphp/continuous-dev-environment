@@ -14,7 +14,7 @@ Parameters:
   Cloud9InstanceType:
     Description: Cloud9 EC2 Instance Type
     Type: String
-    Default: t3.xlarge
+    Default: t3.large
   RoleSSO:
     Description: Federation Role Name
     Type: String
