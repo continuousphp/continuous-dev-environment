@@ -2,7 +2,7 @@
 
 ## Goal
 
-This repository could help you to deploy easily your developpment environment
+This repository could help you to deploy easily your development environment
 
 ##### Install Python
 
@@ -31,10 +31,10 @@ sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 ### preparation :
 
 prepare your hosted zone in Route 53.
-Create you certificate for your base domaine
+Create you certificate for your base domain
 (you can add a wildcard subdomain) : https://aws.amazon.com/fr/certificate-manager/
 
-Deploy manually the `init.yml` stack in order to have `cloudformation` user that you will use to deploy the local environement, and the `cloudformation-cloud9-role` use by cloudformation service during the deployment.
+Deploy manually the `init.yml` stack in order to have `cloudformation` user that you will use to deploy the local environement, and the `cloudformation-cloud9-role` used by cloudformation service during the deployment.
 
 ### create local environment 
 
@@ -67,14 +67,14 @@ make package
 make deploy
 ```
 
-### finalyse
+### finalize
 
-To finalyse configuration connect to AWS console.  
-Go to EC2/LoadBlancing/targetGroup and add your instance to the new target group.
+To finalize the configuration connect to AWS console.  
+Go to EC2/LoadBlancing/targetGroup and add your instance to a new target group.
 
 ### Launch
 
-In your AWS Console, search or cloud9 service and enjoy.
+In your AWS Console, search for cloud9 service and enjoy.
 
 ## deletion
 
