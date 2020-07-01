@@ -4,12 +4,27 @@
 
 This repository could help you to deploy easily your developpment environment
 
-## requirements
+##### Install Python
 
-you must install :
+```bash
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
+```
 
- - python 3
- - pip - aws cli - aws credentials
+##### Install npm
+
+```bash
+curl -O https://npmjs.org/install.sh
+sudo sh install.sh
+```
+
+##### Install AWS CLI
+
+```bash
+curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+unzip awscli-bundle.zip
+sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+```
 
 ## installation
 
