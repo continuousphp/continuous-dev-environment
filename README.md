@@ -36,21 +36,17 @@ Create you certificate for your base domain
 
 Deploy manually the `init.yml` stack in order to have `cloudformation` user that you will use to deploy the local environement, and the `cloudformation-cloud9-role` used by cloudformation service during the deployment.
 
-### create local environment 
+### update local environment
 
-```bash
-export env=dev
-cp environments/dev.mvars.dist environments/dev.mvars
-```
-
-replace env vars :
+replace variables in Makefile with your info:
 
 ```
 bucket=example-template-bucket
 role=arn:aws:iam::ACCOUNTID:role/cloudformation-role
 certificateArn=arn:aws:acm:us-east-1:ACCOUNTID:certificate/CERTIFICATEID
 baseDomain=example.com
-certificateArn=arn:aws:acm:eu-west-1:ACCOUNTID:certificate/CERTIFICATEID roleSSO=continuous-team-sso-Role-ABCDEFG
+certificateArn=arn:aws:acm:eu-west-1:ACCOUNTID:certificate/CERTIFICATEID
+roleSSO=continuous-team-sso-Role-ABCDEFG
 ```
 
 Additionaly you can specify AWS Credentials profile and Region.
