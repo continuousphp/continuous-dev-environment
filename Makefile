@@ -2,7 +2,7 @@ GREEN = \033[0;32m
 YELLOW = \x1b[33m
 NC = \033[0m
 
-env?=staging
+env?=dev
 
 include environments/$(env).mvars
 
@@ -10,7 +10,7 @@ default:help;
 
 appName?=continuous-dev-environment
 
-region?=eu-west-1
+region?=us-east-1
 stack_name?=$(env)-$(appName)
 profile?=$(appName)-$(env)
 baseDomain?=continuous.team
