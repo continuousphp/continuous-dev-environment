@@ -9,12 +9,12 @@ appName=continuous-dev-environment
 region=us-east-1
 stack_name=$(appName)
 profile=$(appName)
-baseDomain=continuous.team
-bucket=platform-init-templatebucket-1g6yzyq7yw07f
-role=arn:aws:iam::043972625556:role/cloudformation-cloud9-role
-certificateArn=arn:aws:acm:us-east-1...
+baseDomain=your_baseDomain
+bucket=your_Bucket
+role=Your_Cloudformation_Role_Arn
+certificateArn=Your_certificate_ARN
 user=prenom.nom@continuous.team
-roleSSO=AWSReservedSSO_AdministratorAccess_3a2adf56b1b3b2b8
+roleSSO=Your_SSO_Role
 
 ## Display this help dialog
 help:
