@@ -65,7 +65,8 @@ make deploy
 
 ### finalize
 
-To finalize the configuration connect to AWS console.  
+Manually change your cloud9 EC2 instance type to r5a.large.
+To finalize the configuration connect to AWS console.
 Go to EC2/LoadBlancing/targetGroup and add your instance to a new target group.
 
 ### Launch
