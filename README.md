@@ -45,7 +45,7 @@ bucket=example-template-bucket
 role=arn:aws:iam::ACCOUNTID:role/cloudformation-role
 certificateArn=arn:aws:acm:us-east-1:ACCOUNTID:certificate/CERTIFICATEID
 baseDomain=example.com
-certificateArn=arn:aws:acm:eu-west-1:ACCOUNTID:certificate/CERTIFICATEID
+certificateArn=arn:aws:acm:us-east-1:ACCOUNTID:certificate/CERTIFICATEID
 roleSSO=continuous-team-sso-Role-ABCDEFG
 ```
 
