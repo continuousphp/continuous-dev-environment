@@ -10,6 +10,11 @@ region=us-east-1
 stack_name=$(appName)
 profile=$(appName)
 baseDomain=continuous.team
+bucket=platform-init-templatebucket-1g6yzyq7yw07f
+role=arn:aws:iam::043972625556:role/cloudformation-cloud9-role
+certificateArn=arn:aws:acm:us-east-1:043972625556:certificate/808fd25d-902c-4d66-92dc-8047a207c65f
+user=prenom.nom@continuous.team
+roleSSO=AWSReservedSSO_AdministratorAccess_3a2adf56b1b3b2b8
 
 ## Display this help dialog
 help:
