@@ -10,11 +10,12 @@ region=us-east-1
 stack_name=$(appName)
 profile=$(appName)
 baseDomain=your_baseDomain
-bucket=your_Bucket
-role=Your_Cloudformation_Role_Arn
-certificateArn=Your_certificate_ARN
+bucket=example-template-bucket
+role=arn:aws:iam::ACCOUNTID:role/cloudformation-role
+certificateArn=arn:aws:acm:eu-west-1:ACCOUNTID:certificate/CERTIFICATEID
 user=prenom.nom@continuous.team
-roleSSO=Your_SSO_Role
+roleSSO=continuous-team-sso-Role-ABCDEFG
+
 
 ## Display this help dialog
 help:
