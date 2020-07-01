@@ -20,11 +20,7 @@ sudo sh install.sh
 
 ##### Install AWS CLI
 
-```bash
-curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-unzip awscli-bundle.zip
-sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-```
+Please refer to official AWS <a href= https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html>docs</a>.
 
 ## installation
 
@@ -36,17 +32,21 @@ Create you certificate for your base domain
 
 Deploy manually the `init.yml` stack in order to have `cloudformation` user that you will use to deploy the local environement, and the `cloudformation-cloud9-role` used by cloudformation service during the deployment.
 
-### update local environment
+### create local environment 
 
-replace variables in Makefile with your info:
+```bash
+export env=dev
+cp environments/dev.mvars.dist environments/dev.mvars
+```
+
+replace env vars :
 
 ```
 bucket=example-template-bucket
 role=arn:aws:iam::ACCOUNTID:role/cloudformation-role
 certificateArn=arn:aws:acm:us-east-1:ACCOUNTID:certificate/CERTIFICATEID
 baseDomain=example.com
-certificateArn=arn:aws:acm:eu-west-1:ACCOUNTID:certificate/CERTIFICATEID
-roleSSO=continuous-team-sso-Role-ABCDEFG
+certificateArn=arn:aws:acm:eu-west-1:ACCOUNTID:certificate/CERTIFICATEID roleSSO=continuous-team-sso-Role-ABCDEFG
 ```
 
 Additionaly you can specify AWS Credentials profile and Region.
