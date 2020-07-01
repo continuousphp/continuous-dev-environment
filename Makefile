@@ -2,18 +2,14 @@ GREEN = \033[0;32m
 YELLOW = \x1b[33m
 NC = \033[0m
 
-env?=dev
-
-include environments/$(env).mvars
-
 default:help;
 
-appName?=continuous-dev-environment
+appName=continuous-dev-environment
 
-region?=us-east-1
-stack_name?=$(env)-$(appName)
-profile?=$(appName)-$(env)
-baseDomain?=continuous.team
+region=us-east-1
+stack_name=$(appName)
+profile=$(appName)
+baseDomain=continuous.team
 
 ## Display this help dialog
 help:
