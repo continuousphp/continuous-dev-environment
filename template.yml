@@ -14,7 +14,7 @@ Parameters:
   Cloud9InstanceType:
     Description: Cloud9 EC2 Instance Type
     Type: String
-    Default: m5.large
+    Default: m5a.large
   RoleSSO:
     Description: Federation Role Name
     Type: String
@@ -54,3 +54,12 @@ Resources:
       Name: !Ref AWS::StackName
       SubnetId: !GetAtt VpcStack.Outputs.Subnet1
       OwnerArn: !Sub 'arn:aws:sts::${AWS::AccountId}:assumed-role/${RoleSSO}/${User}'
+
+
+Outputs:
+  WebappTargetGroup:
+    Description: WebappTargetGroup
+    Value: !GetAtt LoadBalancerStack.Outputs.WebappTargetGroup
+  ApiTargetGroup:
+    Description: ApiTargetGroup
+    Value: !GetAtt LoadBalancerStack.Outputs.ApiTargetGroup
