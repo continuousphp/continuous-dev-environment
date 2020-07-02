@@ -140,3 +140,12 @@ Outputs:
   DNSName:
     Description: ALB Hostname
     Value: !GetAtt Alb.DNSName
+  Alb:
+    Description: Alb
+    Value: !Ref Alb
+  ApiTargetGroup:
+    Description: ApiTargetGroup
+    Value: !Ref ApiTargetGroup
+  WebappTargetGroup:
+    Description: WebappTargetGroup
+    Value: !Ref WebappTargetGroup
