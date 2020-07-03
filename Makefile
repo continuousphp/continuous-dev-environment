@@ -70,5 +70,13 @@ delete:
 		--stack-name $(stack_name)
 
 target-group:
-	aws elbv2 register-targets --target-group-arn $(WebappTargetGroup) --targets Id=$(EC2InstanceId) --region $(region) --profile $(profile)
-	aws elbv2 register-targets --target-group-arn $(ApiTargetGroup) --targets Id=$(EC2InstanceId) --region $(region) --profile $(profile)
+	aws elbv2 register-targets \
+	--target-group-arn $(WebappTargetGroup) \
+	--targets Id=$(EC2InstanceId) \
+	--region $(region) \
+	--profile $(profile)
+	aws elbv2 register-targets \
+	--target-group-arn $(ApiTargetGroup) \
+	--targets Id=$(EC2InstanceId) \
+	--region $(region) \
+	--profile $(profile)
