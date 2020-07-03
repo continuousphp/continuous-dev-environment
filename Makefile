@@ -4,17 +4,12 @@ NC = \033[0m
 
 default:help;
 
-appName=continuous-dev-environment
+include environments/config.mvars
 
+appName=continuous-dev-environment
 region=us-east-1
 stack_name=$(appName)
 profile=default
-baseDomain=farouk.continuous.team
-bucket=init-stack-templatebucket-129d6fp5mdj5d
-role=arn:aws:iam::841723950712:role/cloudformation-cloud9-role
-certificateArn=arn:aws:acm:us-east-1:841723950712:certificate/1ba88a5b-5c0e-402a-abff-dec28d93ba5a
-user=farouk.lamri@continuous.team
-roleSSO=AWSReservedSSO_SandboxAccess_f08a32026a2f2008
 
 EC2InstanceId=$(shell aws ec2 describe-instances --profile $(profile) --region $(region) --filters "Name=instance-type,Values=r5a.large" --query "Reservations[*].Instances[*].{Instance:InstanceId}"  --output text)
 WebappTargetGroup=$(shell aws cloudformation describe-stacks --profile $(profile) --stack-name $(appName) --region $(region) --query "Stacks[0].Outputs[?OutputKey=='WebappTargetGroup'].OutputValue" --output text)
