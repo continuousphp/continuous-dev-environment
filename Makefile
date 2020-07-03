@@ -4,12 +4,12 @@ NC = \033[0m
 
 default:help;
 
-include environments/config.mvars
+env?=dev
+
+include environments/$(env).mvars
 
 appName=continuous-dev-environment
-region=us-east-1
-stack_name=$(appName)
-profile=default
+stack_name?=$(appName)
 
 EC2InstanceId=$(shell aws ec2 describe-instances --profile $(profile) --region $(region) --filters "Name=instance-type,Values=m5.large" --query "Reservations[*].Instances[*].{Instance:InstanceId}"  --output text)
 WebappTargetGroup=$(shell aws cloudformation describe-stacks --profile $(profile) --stack-name $(appName) --region $(region) --query "Stacks[0].Outputs[?OutputKey=='WebappTargetGroup'].OutputValue" --output text)
