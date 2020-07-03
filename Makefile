@@ -8,7 +8,7 @@ env?=dev
 
 include environments/$(env).mvars
 
-appName=continuous-dev-environment
+appName=continuous-dev-environment-1
 stack_name?=$(appName)
 
 EC2InstanceId=$(shell aws ec2 describe-instances --profile $(profile) --region $(region) --filters "Name=instance-type,Values=m5.large" --query "Reservations[*].Instances[*].{Instance:InstanceId}"  --output text)
@@ -74,9 +74,9 @@ target-group:
 	--target-group-arn $(WebappTargetGroup) \
 	--targets Id=$(EC2InstanceId) \
 	--region $(region) \
-	--profile $(profile)
+	--profile $(profile) && echo "Instance is registered in webapp target group"
 	aws elbv2 register-targets \
 	--target-group-arn $(ApiTargetGroup) \
 	--targets Id=$(EC2InstanceId) \
 	--region $(region) \
-	--profile $(profile)
+	--profile $(profile) && echo "Instance is registered in Api target group"
