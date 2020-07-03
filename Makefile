@@ -11,7 +11,7 @@ region=us-east-1
 stack_name=$(appName)
 profile=default
 
-EC2InstanceId=$(shell aws ec2 describe-instances --profile $(profile) --region $(region) --filters "Name=instance-type,Values=r5a.large" --query "Reservations[*].Instances[*].{Instance:InstanceId}"  --output text)
+EC2InstanceId=$(shell aws ec2 describe-instances --profile $(profile) --region $(region) --filters "Name=instance-type,Values=m5.large" --query "Reservations[*].Instances[*].{Instance:InstanceId}"  --output text)
 WebappTargetGroup=$(shell aws cloudformation describe-stacks --profile $(profile) --stack-name $(appName) --region $(region) --query "Stacks[0].Outputs[?OutputKey=='WebappTargetGroup'].OutputValue" --output text)
 ApiTargetGroup=$(shell aws cloudformation describe-stacks --profile $(profile)  --stack-name $(appName) --region $(region) --query "Stacks[0].Outputs[?OutputKey=='ApiTargetGroup'].OutputValue" --output text)
 
