@@ -4,18 +4,16 @@ NC = \033[0m
 
 default:help;
 
+env?=dev
+
+include environments/$(env).mvars
+
 appName=continuous-dev-environment
+stack_name?=$(appName)
 
-region=us-east-1
-stack_name=$(appName)
-profile=$(appName)
-baseDomain=example.com
-bucket=example-template-bucket
-role=arn:aws:iam::ACCOUNTID:role/cloudformation-role
-certificateArn=arn:aws:acm:us-east-1:ACCOUNTID:certificate/CERTIFICATEID
-user=prenom.nom@continuous.team
-roleSSO=continuous-team-sso-Role-ABCDEFG
-
+EC2InstanceId=$(shell aws ec2 describe-instances --profile $(profile) --region $(region) --filters "Name=instance-type,Values=m5.large" --query "Reservations[*].Instances[*].{Instance:InstanceId}"  --output text)
+WebappTargetGroup=$(shell aws cloudformation describe-stacks --profile $(profile) --stack-name $(appName) --region $(region) --query "Stacks[0].Outputs[?OutputKey=='WebappTargetGroup'].OutputValue" --output text)
+ApiTargetGroup=$(shell aws cloudformation describe-stacks --profile $(profile)  --stack-name $(appName) --region $(region) --query "Stacks[0].Outputs[?OutputKey=='ApiTargetGroup'].OutputValue" --output text)
 
 ## Display this help dialog
 help:
@@ -55,6 +53,7 @@ deploy:
 		--parameter-overrides BaseDomain=$(baseDomain) CertificateArn=$(certificateArn) \
 		User=$(user) RoleSSO=$(roleSSO)
 
+
 ## Describe Cloud Formation stack outputs
 describe:
 	@aws --profile $(profile) \
@@ -69,3 +68,15 @@ delete:
 		--region $(region) \
 	  cloudformation delete-stack \
 		--stack-name $(stack_name)
+
+target-group:
+	@aws elbv2 register-targets \
+	--target-group-arn $(WebappTargetGroup) \
+	--targets Id=$(EC2InstanceId) \
+	--region $(region) \
+	--profile $(profile) && echo "Instance is registered in webapp target group"
+	@aws elbv2 register-targets \
+	--target-group-arn $(ApiTargetGroup) \
+	--targets Id=$(EC2InstanceId) \
+	--region $(region) \
+	--profile $(profile) && echo "Instance is registered in Api target group"

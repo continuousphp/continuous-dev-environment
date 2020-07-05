@@ -2,7 +2,6 @@
 .idea
 
 # Make
-!environments/example.mvars
 environments/*.mvars
 
 # SAM Specific files

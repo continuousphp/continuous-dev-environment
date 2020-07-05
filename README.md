@@ -64,11 +64,17 @@ make package
 make deploy
 ```
 
+### after stack created
+
+Add your instance to a new target group.
+The `target-group` Makefile rule may not work correctly if multiple m5.large instances are present in the targeted region (another m5.large instance may be picked up). Execute this BEFORE the final step.
+```bash
+make target-group
+```
+
 ### finalize
 
 Manually change your cloud9 EC2 instance type to r5a.large.
-To finalize the configuration connect to AWS console.
-Go to EC2/LoadBlancing/targetGroup and add your instance to a new target group.
 
 ### Launch
 
