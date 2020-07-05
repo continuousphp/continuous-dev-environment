@@ -67,7 +67,7 @@ make deploy
 ### after stack created
 
 Add your instance to a new target group.
-The `target-group` Makefile rule may not work correctly if multiple m5.large instances are present in the targeted region (another m5.large instance may be picked up). Execute this BEFORE the finalize step.
+The `target-group` Makefile rule may not work correctly if multiple m5.large instances are present in the targeted region (another m5.large instance may be picked up). Execute this BEFORE the final step.
 ```bash
 make target-group
 ```

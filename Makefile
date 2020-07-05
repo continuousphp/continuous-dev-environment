@@ -8,7 +8,7 @@ env?=dev
 
 include environments/$(env).mvars
 
-appName=continuous-dev-environment-1
+appName=continuous-dev-environment
 stack_name?=$(appName)
 
 EC2InstanceId=$(shell aws ec2 describe-instances --profile $(profile) --region $(region) --filters "Name=instance-type,Values=m5.large" --query "Reservations[*].Instances[*].{Instance:InstanceId}"  --output text)
@@ -70,12 +70,12 @@ delete:
 		--stack-name $(stack_name)
 
 target-group:
-	aws elbv2 register-targets \
+	@aws elbv2 register-targets \
 	--target-group-arn $(WebappTargetGroup) \
 	--targets Id=$(EC2InstanceId) \
 	--region $(region) \
 	--profile $(profile) && echo "Instance is registered in webapp target group"
-	aws elbv2 register-targets \
+	@aws elbv2 register-targets \
 	--target-group-arn $(ApiTargetGroup) \
 	--targets Id=$(EC2InstanceId) \
 	--region $(region) \
