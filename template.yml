@@ -54,3 +54,34 @@ Resources:
       Name: !Ref AWS::StackName
       SubnetId: !GetAtt VpcStack.Outputs.Subnet1
       OwnerArn: !Sub 'arn:aws:sts::${AWS::AccountId}:assumed-role/${RoleSSO}/${User}'
+      Tags: 
+        - Key: Cloud9
+          Value: 'yes'
+        - Key: Stack
+          Value: !Sub "${AWS::StackName}"
+        - Key: User
+          Value: !Ref User
+          
+  Cloud9Elb1:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: DevelopmentEnvironment
+    Properties:
+      TemplateURL: ./library/automation.yml
+      Parameters:
+        StackName: !Sub "${AWS::StackName}"
+        User: !Ref User
+        TargetSecurityGroup: !GetAtt LoadBalancerStack.Outputs.TargetSecurityGroup
+        appTargetGroup: !GetAtt LoadBalancerStack.Outputs.WebappTargetGroup
+        Port: 80
+        
+  Cloud9Elb2:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: DevelopmentEnvironment
+    Properties:
+      TemplateURL: ./library/automation.yml
+      Parameters:
+        StackName: !Sub "${AWS::StackName}"
+        User: !Ref User
+        TargetSecurityGroup: !GetAtt LoadBalancerStack.Outputs.TargetSecurityGroup
+        appTargetGroup: !GetAtt LoadBalancerStack.Outputs.ApiTargetGroup
+        Port: 3000
