@@ -44,7 +44,7 @@ package:
 		--output-template-file template-output.yml
 
 ## Deploy Cloud Formation stack
-deploy:
+deploy: package
 	aws --profile $(profile) \
 		--region $(region) \
 	  cloudformation deploy \

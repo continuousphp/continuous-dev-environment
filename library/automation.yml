@@ -1,0 +1,154 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Application Load Balancer Stack
+
+Parameters:
+  StackName:
+    Description: Main Stack Name
+    Type: String
+  User:
+    Description: Training User name
+    Type: String
+  TargetSecurityGroup:
+    Description: Target Security Group
+    Type: String
+  appTargetGroup:
+    Description: Target group to attach
+    Type: String
+  Port:
+    Description: On port X
+    Type: Number
+
+Resources:
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: Lambda-Cf-Killer-Permissions
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*
+              - Effect: Allow
+                Action:
+                  - ec2:*
+                  - Cloud9:*
+                  - elasticloadbalancing:*
+                  - elbv2:*
+                Resource: "*"
+              - Effect: Allow
+                Action: 'lambda:InvokeFunction'
+                Resource: 'arn:aws:lambda:*:*:function:*'
+
+  AttachInstanceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: python3.8
+      Timeout: 60
+      Description: Assign security-group
+      Role: !GetAtt LambdaRole.Arn
+      InlineCode: |
+        import json
+        import boto3
+        from botocore.exceptions import ClientError
+        import cfnresponse
+        from botocore.config import Config
+                    
+        def handler(event, context):
+            try:
+                print(event['RequestType'])
+                my_config = Config(region_name = 'us-east-1');
+                
+                tg = boto3.client('elbv2')
+                ec2 = boto3.resource('ec2' , config=my_config);
+                params = event.get('ResourceProperties', None)
+                StackName = params["StackName"]
+                UserName = params["User"]
+                Port = int(params["TargetPort"])
+                TargetGroup = params["TargetGroupArn"]
+                SecurityGroup = params["SecurityGroupId"]
+                
+                custom_filter = [{
+                    'Name':'tag:Cloud9', 
+                    'Values': ['yes']},
+                    {'Name':'tag:Stack', 
+                    'Values': [StackName]},
+                    {'Name':'tag:User', 
+                    'Values': [UserName]},
+                    {'Name': 'instance-state-name', 
+                    'Values': ['running' , 'stopped' , 'stopping']}];
+                
+                cloud9 = ec2.instances.filter(Filters=custom_filter);
+                
+                if(event['RequestType'] == "Delete"):
+                    for instance in cloud9 :
+                      response = tg.deregister_targets(
+                        TargetGroupArn=TargetGroup,
+                        Targets=[
+                            {
+                                'Id': instance.id,
+                                'Port': Port
+                            },
+                          ]
+                        )
+                    
+                      all_sg_ids = instance.security_groups 
+                      if SecurityGroup in all_sg_ids:          
+                        all_sg_ids.remove(SecurityGroup)                 
+                        instance.modify_attribute(Groups=all_sg_ids)
+                                    
+                    cfnresponse.send(event, context, cfnresponse.SUCCESS, {"message": "environment ok delete"})
+                  
+                if(event['RequestType'] == "Create" or event['RequestType'] == "Update"):
+                    for instance in cloud9 :
+                      print(instance.state)
+                      if instance.state['Code'] == 80 or instance.state['Code'] == 64 :
+                        instance.start()
+                      if instance.state['Code'] == 80 or instance.state['Code'] == 64 or instance.state['Code'] == 0 :
+                        instance.wait_until_running()
+                      if instance.state['Code'] == 16 :
+                        response = tg.register_targets(
+                          TargetGroupArn=TargetGroup,
+                          Targets=[
+                              {
+                                  'Id': instance.id,
+                                  'Port': Port
+                              },
+                          ]
+                      )
+                      groups = []
+                      for group in instance.security_groups :
+                        groups.append(str(group['GroupId']))
+                      groups.append(str(SecurityGroup))
+                      instance.modify_attribute(Groups=groups)
+    
+                    cfnresponse.send(event, context, cfnresponse.SUCCESS, {"message": "environment ok Create"})
+            except BaseException as e:
+                print(str(e))
+                cfnresponse.send(event, context, cfnresponse.FAILED, { "message": str(e) })
+
+
+  AssignElbCustom:
+    Type: Custom::AssignElb
+    Properties:
+      ServiceToken: !GetAtt AttachInstanceFunction.Arn
+      TargetPort: !Ref Port
+      SecurityGroupId: !Ref TargetSecurityGroup 
+      TargetGroupArn: !Ref appTargetGroup 
+      StackName: !Ref StackName
+      User: !Ref User

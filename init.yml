@@ -1,6 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
-
 Resources:
   TemplateBucket:
     Type: AWS::S3::Bucket
@@ -38,7 +37,7 @@ Resources:
   CloudformationUser:
     Type: AWS::IAM::User
     Properties:
-      UserName: cloudformation
+      UserName: cloudformation-user
       Policies:
         -
           PolicyName: cloudformation-cloud9-policy
